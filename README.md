@@ -1,1 +1,2 @@
-# download and run html or click here https://normal-regret.surge.sh
+# 2d game
+- download and run html or click here https://normal-regret.surge.sh
