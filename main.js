@@ -1,4 +1,3 @@
-
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d')
 canvas.width = 1024;
@@ -26,6 +25,7 @@ const offset = {
     y: -950
 }
 
+// boundaries
 const collisionsMap = [];
 for (let i = 0; i < collisions.length; i += 70){
     collisionsMap.push(collisions.slice(i, 70 + i))
@@ -44,6 +44,7 @@ collisionsMap.forEach((row, i) => {
     })
 });
 
+// pokeballs
 const pokeballsMap = [];
 for (let i = 0; i < pokeballs.length; i += 70){
     pokeballsMap.push(pokeballs.slice(i, 70 + i))
@@ -58,10 +59,31 @@ pokeballsMap.forEach((row, i) => {
                     y: i * Pokeball.width + offset.y
                 },
                 image: ballimg
+            }));
+        }
+    })
+});
+
+// doors
+const doorsMap = [];
+for (let i = 0; i < doors.length; i += 70){
+    doorsMap.push(doors.slice(i, 70 + i))
+}
+const availdoors = [];
+doorsMap.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol == 1025){
+            availdoors.push(new Door({
+                position: {
+                    x: j * Door.width + offset.x,
+                    y: i * Door.width + offset.y
+                }
             }))
         }
     })
 });
+
+// background
 const background = new Sprite({
     position: {
         x: offset.x,
@@ -69,6 +91,8 @@ const background = new Sprite({
     },
     image: bgimg
 });
+
+// character
 const player = new Sprite({
     position: {
         x: canvas.width / 2 - 192 / 4 / 2,
@@ -85,6 +109,8 @@ const player = new Sprite({
         right: playerrightimg
     }
 });
+
+// background2
 const backgroundAbove = new Sprite ({
     position: {
         x: offset.x,
@@ -93,35 +119,14 @@ const backgroundAbove = new Sprite ({
     image: bgimgAb
 });
 
+const movables = [background,backgroundAbove, ...boundaries, ...balls, ...availdoors]
 
-const keys = {
-    w: {
-        pressed: false
-    },
-    a: {
-        pressed: false
-    },
-    s: {
-        pressed: false
-    },
-    d: {
-        pressed: false
-    },
-};
-let lastkey = ''
-
-const rectColliding = ({rectangular1, rectangular2}) => {
-    return (
-        rectangular1.position.x  + rectangular1.width >= rectangular2.position.x &&
-        rectangular1.position.x   <= rectangular2.position.x + rectangular2.width &&
-        rectangular1.position.y + rectangular1.height  >= rectangular2.position.y &&
-        rectangular1.position.y  <= rectangular2.position.y + rectangular2.height
-    )
-}
-
-const movables = [background,backgroundAbove, ...boundaries, ...balls]
+// game render loop
 const animate = () => {
+    // recursive loop
     window.requestAnimationFrame(animate);
+
+    // renderd items
     background.draw();
     balls.forEach(ball => {
         ball.draw();
@@ -131,11 +136,63 @@ const animate = () => {
     boundaries.forEach(boundary => {
         boundary.draw();
     });
+    availdoors.forEach(door => {
+        door.draw();
+    });
     let moving = true
     player.moving = false;
+
+    // ball collision check
+    for(let i = 0; i < balls.length; i++){
+        const ball = balls[i]
+        if (
+            rectColliding({
+                rectangular1: player,
+                rectangular2: {...ball, position: {
+                        x: ball.position.x,
+                        y: ball.position.y
+                    }
+                }
+            })
+        ){
+            console.log("pokeballfound");
+            moving = false;
+            movables.forEach((movable) => {
+                movable.position.y -= 3
+            })
+            break
+            break
+        }
+    }
+
+    // door collision check
+    for(let i = 0; i < availdoors.length; i++){
+        const availdoor = availdoors[i]
+        if (
+            rectColliding({
+                rectangular1: player,
+                rectangular2: {...availdoor, position: {
+                        x: availdoor.position.x,
+                        y: availdoor.position.y
+                    }
+                }
+            })
+        ){
+            console.log("doorfound");
+            moving = false;
+            movables.forEach((movable) => {
+                movable.position.y -= 3
+            })
+            break
+        }
+    }
+
+    // button check
     if (keys.w.pressed){
         player.moving = true;
         player.image = player.sprites.up
+
+        // boundary collision check
         for(let i = 0; i < boundaries.length; i++){
             const boundary = boundaries[i]
             if (
@@ -146,8 +203,8 @@ const animate = () => {
                     y: boundary.position.y + 3
                 }}
             })){
-                console.log("colliding")
-                moving = false
+                console.log("colliding");
+                moving = false;
                 break
             }
         }
@@ -157,9 +214,11 @@ const animate = () => {
             })
         }
     }
-    else if (keys.a.pressed){
+    if (keys.a.pressed){
         player.moving = true;
         player.image = player.sprites.left
+
+        // boundary collision check
         for(let i = 0; i < boundaries.length; i++){
             const boundary = boundaries[i]
             if (
@@ -184,6 +243,8 @@ const animate = () => {
     if (keys.s.pressed){
         player.moving = true;
         player.image = player.sprites.down
+
+        // boundary collision check
         for(let i = 0; i < boundaries.length; i++){
             const boundary = boundaries[i]
             if (
@@ -209,6 +270,8 @@ const animate = () => {
     if (keys.d.pressed){
         player.moving = true;
         player.image = player.sprites.right
+
+        // boundary collision check
         for(let i = 0; i < boundaries.length; i++){
             const boundary = boundaries[i]
             if (
@@ -231,5 +294,4 @@ const animate = () => {
         } 
     }
 }
-
 animate();

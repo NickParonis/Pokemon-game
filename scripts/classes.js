@@ -54,14 +54,29 @@ class Pokeball {
     static width = 48
     constructor({position, image}){
         this.position = position;
+        this.width = 48;
+        this.height = 48;
         this.image = image;
     }
     draw() {
+        c.fillStyle = 'red'
+        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
         c.drawImage(
             this.image,
             this.position.x,
             this.position.y,
         );
     }
-
+}
+class Door {
+    static width = 48
+    constructor({position, }){
+        this.position = position
+        this.width = 48
+        this.height = 48
+    }
+    draw() {
+        c.fillStyle = 'rgba(0, 144, 144, 0.4)'
+        c.fillRect(this.position.x, this.position.y, this.width, this.height)
+    }
 }

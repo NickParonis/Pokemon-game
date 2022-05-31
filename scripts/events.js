@@ -1,3 +1,19 @@
+const keys = {
+    w: {
+        pressed: false,
+        // arrow
+    },
+    a: {
+        pressed: false
+    },
+    s: {
+        pressed: false
+    },
+    d: {
+        pressed: false
+    },
+};
+let lastkey = ''
 window.addEventListener('keydown', (e) => {
     switch (e.key){
         case 'w':
