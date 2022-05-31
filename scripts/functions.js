@@ -6,3 +6,6 @@ const rectColliding = ({rectangular1, rectangular2}) => {
         rectangular1.position.y  <= rectangular2.position.y + rectangular2.height
     )
 }
+const doorhtmltran = () => {
+    
+}

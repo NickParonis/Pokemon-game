@@ -25,6 +25,14 @@ const offset = {
     y: -950
 }
 
+const pokedex = {
+    initiated: false
+}
+
+const house = {
+    initiated: false
+}
+
 // boundaries
 const collisionsMap = [];
 for (let i = 0; i < collisions.length; i += 70){
@@ -121,10 +129,11 @@ const backgroundAbove = new Sprite ({
 
 const movables = [background,backgroundAbove, ...boundaries, ...balls, ...availdoors]
 
-// game render loop
+// game render loops
 const animate = () => {
     // recursive loop
-    window.requestAnimationFrame(animate);
+    const animationId = window.requestAnimationFrame(animate);
+    console.log(animationId)
 
     // renderd items
     background.draw();
@@ -142,6 +151,9 @@ const animate = () => {
     let moving = true
     player.moving = false;
 
+    // checks if you are in pokedex or in house and returns/ignores the events below
+    if (pokedex.initiated || house.initiated) return
+
     // ball collision check
     for(let i = 0; i < balls.length; i++){
         const ball = balls[i]
@@ -156,12 +168,17 @@ const animate = () => {
             })
         ){
             console.log("pokeballfound");
-            moving = false;
+            window.cancelAnimationFrame(animationId);
+            // pokedex.initiated = true
+            // moving = false;
             movables.forEach((movable) => {
                 movable.position.y -= 3
             })
-            break
-            break
+            animateHouse();
+            gsap.to('#overlapdiv', {
+                opacity: 1,
+                yoyo: true
+            })
         }
     }
 
@@ -179,11 +196,17 @@ const animate = () => {
             })
         ){
             console.log("doorfound");
-            moving = false;
+            window.cancelAnimationFrame(animationId)
+            // house.initiated = true
+            // moving = false;
             movables.forEach((movable) => {
                 movable.position.y -= 3
             })
-            break
+            animateHouse();
+            gsap.to('#overlapdiv', {
+                opacity: 1,
+                yoyo: true
+            })
         }
     }
 
@@ -293,5 +316,10 @@ const animate = () => {
             })
         } 
     }
+}
+
+const animateHouse = () => {
+    window.requestAnimationFrame(animateHouse);
+    console.log('inside house loop working')
 }
 animate();

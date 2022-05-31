@@ -76,7 +76,7 @@ class Door {
         this.height = 48
     }
     draw() {
-        c.fillStyle = 'rgba(0, 144, 144, 0.4)'
+        c.fillStyle = 'rgba(0, 144, 144, 0)'
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
