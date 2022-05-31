@@ -36,18 +36,32 @@ class Sprite {
                 }
             }
         }
-        
     }
 }
 class Boundary {
     static width = 48
     constructor({position, }){
         this.position = position
-        this.width = 48
-        this.height = 48
+        this.width = 22
+        this.height = 22
     }
     draw() {
-        c.fillStyle = 'rgba(255, 0, 0, 0)'
+        c.fillStyle = 'rgba(255, 0, 0, 0.2)'
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
+}
+class Pokeball {
+    static width = 48
+    constructor({position, image}){
+        this.position = position;
+        this.image = image;
+    }
+    draw() {
+        c.drawImage(
+            this.image,
+            this.position.x,
+            this.position.y,
+        );
+    }
+
 }
