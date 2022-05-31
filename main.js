@@ -167,13 +167,14 @@ const animate = () => {
                 }
             })
         ){
-            console.log("pokeballfound");
-            window.cancelAnimationFrame(animationId);
-            // pokedex.initiated = true
-            // moving = false;
+            console.log("doorfound");
+            // house.initiated = true
+            moving = false;
             movables.forEach((movable) => {
                 movable.position.y -= 3
+                movable.position.x += 3
             })
+            window.cancelAnimationFrame(animationId);
             animateHouse();
             gsap.to('#overlapdiv', {
                 opacity: 1,
@@ -196,12 +197,13 @@ const animate = () => {
             })
         ){
             console.log("doorfound");
-            window.cancelAnimationFrame(animationId)
             // house.initiated = true
-            // moving = false;
+            moving = false;
             movables.forEach((movable) => {
                 movable.position.y -= 3
+                movable.position.x += 3
             })
+            window.cancelAnimationFrame(animationId);
             animateHouse();
             gsap.to('#overlapdiv', {
                 opacity: 1,
@@ -318,8 +320,20 @@ const animate = () => {
     }
 }
 
-const animateHouse = () => {
-    window.requestAnimationFrame(animateHouse);
-    console.log('inside house loop working')
-}
+
 animate();
+
+const animateHouse = () => {
+    const animationhouseId = window.requestAnimationFrame(animateHouse);
+    console.log("you are inside")
+    if(keys.q.pressed){
+        house.initiated = false;
+        window.cancelAnimationFrame(animationhouseId);
+        
+        gsap.to('#overlapdiv', {
+            opacity: 0,
+            yoyo: true
+        })
+        animate();
+    }
+}

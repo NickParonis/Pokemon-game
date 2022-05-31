@@ -12,6 +12,9 @@ const keys = {
     d: {
         pressed: false
     },
+    q: {
+        pressed: false
+    },
 };
 let lastkey = ''
 window.addEventListener('keydown', (e) => {
@@ -32,6 +35,10 @@ window.addEventListener('keydown', (e) => {
             keys.d.pressed = true;
             lastkey = "d";
         break
+        case 'q':
+            keys.q.pressed = true;
+            lastkey = "q";
+        break
     }
 });
 window.addEventListener('keyup', (e) => {
@@ -47,6 +54,9 @@ window.addEventListener('keyup', (e) => {
         break
         case 'd':
             keys.d.pressed = false;
+        break
+        case 'q':
+            keys.q.pressed = false;
         break
     }
 })
