@@ -59,7 +59,7 @@ class Pokeball {
         this.image = image;
     }
     draw() {
-        c.fillStyle = 'red'
+        // c.fillStyle = 'red'
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
         c.drawImage(
             this.image,
