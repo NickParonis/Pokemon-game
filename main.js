@@ -25,14 +25,6 @@ const offset = {
     y: -950
 }
 
-const pokedex = {
-    initiated: false
-}
-
-const house = {
-    initiated: false
-}
-
 // boundaries
 const collisionsMap = [];
 for (let i = 0; i < collisions.length; i += 70){
@@ -128,13 +120,20 @@ const backgroundAbove = new Sprite ({
 });
 
 const movables = [background,backgroundAbove, ...boundaries, ...balls, ...availdoors]
-
+let animationId
+let animationhouseId
+const pokedex = {
+    initiated: false
+}
+const house = {
+    initiated: false
+}
 // game render loops
 const animate = () => {
     // recursive loop
-    const animationId = window.requestAnimationFrame(animate);
-    console.log(animationId)
-
+    animationId = window.requestAnimationFrame(animate);
+    console.log("house animation id is" + animationhouseId)
+    console.log("game animation id is" + animationId)
     // renderd items
     background.draw();
     balls.forEach(ball => {
@@ -148,10 +147,11 @@ const animate = () => {
     availdoors.forEach(door => {
         door.draw();
     });
+    
     let moving = true
     player.moving = false;
 
-    // checks if you are in pokedex or in house and returns/ignores the events below
+    ///////////////////////////// checks if you are in pokedex or in house and returns/ignores the events below
     if (pokedex.initiated || house.initiated) return
 
     // ball collision check
@@ -167,12 +167,24 @@ const animate = () => {
                 }
             })
         ){
-            console.log("doorfound");
-            // house.initiated = true
+            console.log("pokeball found");
+            house.initiated = true
             moving = false;
             movables.forEach((movable) => {
-                movable.position.y -= 3
-                movable.position.x += 3
+                switch (lastkey){
+                    case 'w':
+                        movable.position.y -= 3
+                    break
+                    case 'a':
+                        movable.position.x -= 3
+                    break
+                    case 's':
+                        movable.position.y += 3
+                    break
+                    case 'd':
+                        movable.position.x += 3
+                    break
+                }
             })
             window.cancelAnimationFrame(animationId);
             animateHouse();
@@ -197,11 +209,23 @@ const animate = () => {
             })
         ){
             console.log("doorfound");
-            // house.initiated = true
+            house.initiated = true
             moving = false;
             movables.forEach((movable) => {
-                movable.position.y -= 3
-                movable.position.x += 3
+                switch (lastkey){
+                    case 'w':
+                        movable.position.y -= 3
+                    break
+                    case 'a':
+                        movable.position.x -= 3
+                    break
+                    case 's':
+                        movable.position.y += 3
+                    break
+                    case 'd':
+                        movable.position.x += 3
+                    break
+                }
             })
             window.cancelAnimationFrame(animationId);
             animateHouse();
@@ -209,11 +233,12 @@ const animate = () => {
                 opacity: 1,
                 yoyo: true
             })
+
         }
     }
 
     // button check
-    if (keys.w.pressed){
+    if (keys.w.pressed && lastkey == "w"){
         player.moving = true;
         player.image = player.sprites.up
 
@@ -239,7 +264,7 @@ const animate = () => {
             })
         }
     }
-    if (keys.a.pressed){
+    if (keys.a.pressed && lastkey == "a"){
         player.moving = true;
         player.image = player.sprites.left
 
@@ -265,7 +290,7 @@ const animate = () => {
             })
         }  
     }
-    if (keys.s.pressed){
+    if (keys.s.pressed && lastkey == "s"){
         player.moving = true;
         player.image = player.sprites.down
 
@@ -292,7 +317,7 @@ const animate = () => {
         } 
         
     }
-    if (keys.d.pressed){
+    if (keys.d.pressed && lastkey == "d"){
         player.moving = true;
         player.image = player.sprites.right
 
@@ -320,20 +345,21 @@ const animate = () => {
     }
 }
 
-
 animate();
-
 const animateHouse = () => {
-    const animationhouseId = window.requestAnimationFrame(animateHouse);
+    animationhouseId = window.requestAnimationFrame(animateHouse);
     console.log("you are inside")
-    if(keys.q.pressed){
+    console.log("house animation id is " + animationhouseId)
+    console.log("game animation id is " + animationId)
+    if(keys.q.pressed && lastkey == "q"){
         house.initiated = false;
+        moving = true;
         window.cancelAnimationFrame(animationhouseId);
-        
+        animate();
         gsap.to('#overlapdiv', {
             opacity: 0,
             yoyo: true
         })
-        animate();
+        
     }
 }
