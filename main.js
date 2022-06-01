@@ -1,3 +1,6 @@
+
+
+
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d')
 canvas.width = 1024;
@@ -6,6 +9,12 @@ c.fillStyle = 'white';
 c.fillRect(0, 0, canvas.width, canvas.height);
 const bgimg = new Image();
 bgimg.src = './img/map.png'
+const diaimg = new Image();
+diaimg.src = './img/dialoguebox.png'
+const mowimg = new Image();
+mowimg.src = './img/mow.png'
+const houseimg = new Image();
+houseimg.src = './img/insidehouse.png'
 const ballimg = new Image();
 ballimg.src = './img/pokeball.png'
 const bgimgAb = new Image();
@@ -119,6 +128,33 @@ const backgroundAbove = new Sprite ({
     image: bgimgAb
 });
 
+// dialoguebox
+const dialoguebox = new Sprite ({
+    position: {
+        x: 75,
+        y: 20
+    },
+    image: diaimg
+});
+
+// house
+const housesprite = new Sprite ({
+    position: {
+        x: 0,
+        y: 0
+    },
+    image: houseimg
+});
+
+// mowouth
+const mow = new Sprite ({
+    position: {
+        x: 350,
+        y: 150
+    },
+    image: mowimg
+});
+
 const movables = [background,backgroundAbove, ...boundaries, ...balls, ...availdoors]
 let animationId
 let animationhouseId
@@ -132,8 +168,7 @@ const house = {
 const animate = () => {
     // recursive loop
     animationId = window.requestAnimationFrame(animate);
-    console.log("house animation id is" + animationhouseId)
-    console.log("game animation id is" + animationId)
+
     // renderd items
     background.draw();
     balls.forEach(ball => {
@@ -151,7 +186,7 @@ const animate = () => {
     let moving = true
     player.moving = false;
 
-    ///////////////////////////// checks if you are in pokedex or in house and returns/ignores the events below
+    // checks if you are in pokedex or in house and returns/ignores the events below
     if (pokedex.initiated || house.initiated) return
 
     // ball collision check
@@ -188,10 +223,29 @@ const animate = () => {
             })
             window.cancelAnimationFrame(animationId);
             animateHouse();
-            gsap.to('#overlapdiv', {
-                opacity: 1,
-                yoyo: true
-            })
+            $('.dialoguediv').toggleClass('hide');
+            $('.exitdiv').toggleClass('hide');
+            let textWrapper = document.querySelector('.ml3');
+            textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+            anime.timeline({loop: true})
+            .add({
+            targets: '.ml3 .letter',
+            opacity: [0,1],
+            easing: "easeInOutQuad",
+            duration: 250,
+            delay: (el, i) => 150 * (i+1)
+            }).add({
+            targets: '.ml3',
+            opacity: 0,
+            duration: 1000,
+            easing: "easeOutExpo",
+            delay: 1000
+            });
+            // gsap.to('#overlapdiv', {
+            //     opacity: 1,
+            //     repeat: 1,
+            //     yoyo: true
+            // })
         }
     }
 
@@ -229,11 +283,24 @@ const animate = () => {
             })
             window.cancelAnimationFrame(animationId);
             animateHouse();
-            gsap.to('#overlapdiv', {
-                opacity: 1,
-                yoyo: true
-            })
-
+            $('.dialoguediv').toggleClass('hide');
+            $('.exitdiv').toggleClass('hide');
+            let textWrapper = document.querySelector('.ml3');
+            textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+            anime.timeline({loop: true})
+            .add({
+            targets: '.ml3 .letter',
+            opacity: [0,1],
+            easing: "easeInOutQuad",
+            duration: 250,
+            delay: (el, i) => 150 * (i+1)
+            }).add({
+            targets: '.ml3',
+            opacity: 0,
+            duration: 1000,
+            easing: "easeOutExpo",
+            delay: 1000
+            });
         }
     }
 
@@ -348,18 +415,15 @@ const animate = () => {
 animate();
 const animateHouse = () => {
     animationhouseId = window.requestAnimationFrame(animateHouse);
-    console.log("you are inside")
-    console.log("house animation id is " + animationhouseId)
-    console.log("game animation id is " + animationId)
+    housesprite.draw();
+    mow.draw();
     if(keys.q.pressed && lastkey == "q"){
         house.initiated = false;
         moving = true;
+        $('.testdiv').addClass('hide');
         window.cancelAnimationFrame(animationhouseId);
+        $('.dialoguediv').toggleClass('hide');
+        $('.exitdiv').toggleClass('hide');
         animate();
-        gsap.to('#overlapdiv', {
-            opacity: 0,
-            yoyo: true
-        })
-        
     }
 }
